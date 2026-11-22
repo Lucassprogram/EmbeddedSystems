@@ -1,0 +1,99 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Blink LED",
+            "type": "ccs-debug",
+            "request": "launch",
+            "projectInfo": {
+                "name": "Blink LED",
+                "resourceId": "/Blink LED"
+            }
+        },
+        {
+            "name": "lab2",
+            "type": "ccs-debug",
+            "request": "launch",
+            "projectInfo": {
+                "name": "lab2",
+                "resourceId": "/lab2"
+            }
+        },
+        {
+            "name": "lab3",
+            "type": "ccs-debug",
+            "request": "launch",
+            "projectInfo": {
+                "name": "lab3",
+                "resourceId": "/lab3"
+            }
+        },
+        {
+            "name": "lab4",
+            "type": "ccs-debug",
+            "request": "launch",
+            "projectInfo": {
+                "name": "lab4",
+                "resourceId": "/lab4"
+            }
+        },
+        {
+            "name": "lab5",
+            "type": "ccs-debug",
+            "request": "launch",
+            "projectInfo": {
+                "name": "lab5",
+                "resourceId": "/lab5"
+            }
+        },
+        {
+            "name": "lab6uart",
+            "type": "ccs-debug",
+            "request": "launch",
+            "projectInfo": {
+                "name": "lab6uart",
+                "resourceId": "/lab6uart"
+            }
+        },
+        {
+            "name": "LAB7",
+            "type": "ccs-debug",
+            "request": "launch",
+            "projectInfo": {
+                "name": "LAB7",
+                "resourceId": "/LAB7"
+            }
+        },
+        {
+            "name": "LAB8",
+            "type": "ccs-debug",
+            "request": "launch",
+            "projectInfo": {
+                "name": "LAB8",
+                "resourceId": "/LAB8"
+            }
+        },
+        {
+            "name": "JDSoftwareDraft",
+            "type": "ccs-debug",
+            "request": "launch",
+            "projectInfo": {
+                "name": "JDSoftwareDraft",
+                "resourceId": "/JDSoftwareDraft"
+            },
+            "connections": [
+                {
+                    "name": "TI MSP430 USB1",
+                    "cores": [
+                        {
+                            "name": "MSP430",
+                            "debuggerSettings": {
+                                "data": "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\" ?>\n<PropertyValues/>\n"
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

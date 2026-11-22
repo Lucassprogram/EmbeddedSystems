@@ -1,0 +1,46 @@
+#include <msp430.h>
+
+#include <stdio.h>
+
+#include <Junior_design.h>
+
+static unsigned long int d1;
+
+volatile unsigned int distance_mm;
+
+int main(void)
+
+{
+
+  WDTCTL = WDTPW | WDTHOLD; // stop watchdog timer
+  // Go initialize the MSP430G2553 hardware to
+  // setup I2C and the timers
+  // Set the MCLk to 8 MHz and setup GPIO
+  // for the ultrasonic sensor
+
+  Init_HW();
+  // Go initialize the LCD display
+  LCD_Initialize();
+  // Mosfet / Blink
+  P2DIR |= BIT3;
+  P2OUT &= ~BIT3;
+  // Store message in a character array
+  char Data[] = "Junior Design ";
+  // these lines are for the LCD display
+  LCD_CLRscreen();
+  // Junior Design Message
+  LCD_String(Data);
+  char Data2[32];
+
+  while (1)
+  {
+      Duty = (Duty + 10) % 100;
+
+      sprintf(Data2, "%d  ", (int)Duty);
+      LCD_Cursor_Postion(0x40);  // Start of the second row
+      LCD_String(Data2);
+
+      P2OUT ^= BIT3;
+      Delay_Timer(DELAYT_500ms);
+  }
+}

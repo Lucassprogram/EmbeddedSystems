@@ -1,0 +1,173 @@
+#include <msp430fr6989.h> 
+#define redLED BIT0
+#define greenLED BIT7
+#define BUTTON_1 BIT1
+#define BUTTON_2 BIT2
+
+void Initialize_LCD(void);
+void config_ACLK_to32Khz_crystal(); 
+const unsigned char LCD_Shapes[10] = {0xFC, 0x60, 0xDB, 0xF3, 0x67, 0xB7, 0xBF, 0xE4, 0xFF, 0xF7};
+volatile unsigned int count = 0;
+
+void lcd_write_uint16(unsigned int n);
+
+/**
+ * main.c
+ */
+int main(void)
+{
+	WDTCTL = WDTPW | WDTHOLD;	// stop watchdog timer
+	volatile unsigned int n;
+	PM5CTL0 &= ~LOCKLPM5;
+	config_ACLK_to32Khz_crystal(); 
+
+    // Config channel 0 
+    TA0CCR0 = 32767; 
+    TA0CCTL0 |= CCIE; 
+    TA0CCTL0 &= ~CCIFG; 
+    TA0CTL = TASSEL_1 | ID_0 | MC_1 | TACLR ; 
+    TA0CTL &= ~TAIFG; 
+    P1DIR |= redLED;
+    P9DIR |= greenLED;
+    P1OUT |= redLED;
+    P9OUT &= ~greenLED;
+   // Configure the buttons as inputs with pull-up resistors.
+    P1DIR &= ~(BUTTON_1 | BUTTON_2);
+    P1REN |= BUTTON_1 | BUTTON_2;
+    P1OUT |= BUTTON_1 | BUTTON_2;
+    // A falling edge indicates that a button was pressed.
+    P1IES |= BUTTON_1 | BUTTON_2;
+    // Unlock the GPIO pins before clearing any startup interrupt flags.
+    P1IFG &= ~(BUTTON_1 | BUTTON_2);
+    P1IE &= ~(BUTTON_1 | BUTTON_2);
+    TA1CCR0 = 327;
+    TA1CCTL0 = CCIE;
+    TA1CTL = TASSEL_1 | ID_0 | MC_1 | TACLR;
+
+	Initialize_LCD();
+	lcd_write_uint16(count);
+	__enable_interrupt();
+	
+	for(;;)
+	{
+		for(n=0; n <= 6000; n++)
+		{
+			P1OUT ^= redLED;
+		}
+	}
+}
+
+void Initialize_LCD(void)
+{
+	PJSEL0 = BIT4 | BIT5;
+
+	LCDCPCTL0 = 0xFFD0;
+	LCDCPCTL1 = 0xF83F;
+	LCDCPCTL2 = 0x00F8;
+
+	//Configure LFXT 32kHz crystal
+	CSCTL0_H = CSKEY >> 8;
+	CSCTL4 &= ~LFXTOFF;
+	do {
+		CSCTL5 &= ~LFXTOFFG;
+		SFRIFG1 &= ~OFIFG;
+	}while (SFRIFG1 & OFIFG);
+	CSCTL0_H = 0;
+
+	// Initialize LCD_C
+	// ACLK, Divider = 1, Pre-divider = 16; 4-pin MUX
+	LCDCCTL0 = LCDDIV__1 | LCDPRE__16 | LCD4MUX | LCDLP;
+	// VLCD generated internally,
+	// V2-V4 generated internally, v5 to ground
+	// Set VLCD voltage to 2.60v
+	// Enable charge pump and select internal reference for it
+	LCDCVCTL = VLCD_1 | VLCDREF_0 | LCDCPEN;
+	LCDCCPCTL = LCDCPCLKSYNC; // Clock synchronization enabled
+
+	LCDCMEMCTL = LCDCLRM;
+
+	//Turn LCD on 
+	LCDCCTL0 |= LCDON;
+}
+
+void lcd_write_uint16(unsigned int n)
+{
+	unsigned int ones = n % 10;          
+    unsigned int tens = (n / 10) % 10;   
+    unsigned int hundreds = (n / 100) % 10; 
+    unsigned int thousands = (n / 1000) % 10; 
+	unsigned int tenthousands = (n / 10000) % 10;
+
+	LCDM10 = LCD_Shapes[tenthousands];
+	LCDM6  = LCD_Shapes[thousands];
+	LCDM4  = LCD_Shapes[hundreds];
+	LCDM19 = LCD_Shapes[tens];
+	LCDM15 = LCD_Shapes[ones];
+	// LCDM8  = LCD_Shapes[0];
+}
+
+#pragma vector = TIMER0_A0_VECTOR 
+__interrupt void T0A0_ISR() 
+{ 
+   TA0CTL &= ~TAIFG; 
+   count++;
+   lcd_write_uint16(count);
+
+} 
+
+#pragma vector = TIMER1_A0_VECTOR
+__interrupt void Button_Debounce_ISR(void)
+{
+    static unsigned char button1_down = 0;
+    static unsigned char button2_down = 0;
+    static unsigned char samples1 = 0;
+    static unsigned char samples2 = 0;
+
+    unsigned char pressed1 = (P1IN & BUTTON_1) == 0;
+    unsigned char pressed2 = (P1IN & BUTTON_2) == 0;
+    unsigned char changed = 0;
+
+    // Button 1: add 1000 once per stable press.
+    if (pressed1 == button1_down) {
+        samples1 = 0;
+    } else if (++samples1 >= 3) {
+        button1_down = pressed1;
+        samples1 = 0;
+
+        if (button1_down) {
+            count += 1000;
+            changed = 1;
+        }
+    }
+
+    // Button 2: reset once per stable press.
+    if (pressed2 == button2_down) {
+        samples2 = 0;
+    } else if (++samples2 >= 3) {
+        button2_down = pressed2;
+        samples2 = 0;
+
+        if (button2_down) {
+            count = 0;
+            changed = 1;
+        }
+    }
+
+    if (changed) {
+        lcd_write_uint16(count);
+    }
+}
+void config_ACLK_to32Khz_crystal() 
+{ 
+    // The 32 KHz crystal uses both PJ.4 (LFXIN) and PJ.5 (LFXOUT). 
+    PJSEL1 &= ~(BIT4 | BIT5); 
+    PJSEL0 |= (BIT4 | BIT5); 
+    CSCTL0 = CSKEY; //Unlock cs reg 
+    do 
+    { 
+        CSCTL5 &= ~LFXTOFFG; //local fault flag 
+        SFRIFG1 &= ~OFIFG; //Global fault flag 
+    }while((CSCTL5 & LFXTOFFG) != 0); 
+    CSCTL0_H = 0; 
+    return; 
+} 
