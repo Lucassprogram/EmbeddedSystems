@@ -1,0 +1,7 @@
+[
+   {
+      "directory" : "/Users/lucassutton/workspace_ccstheia/FinalProject/Debug",
+      "command"   : "clang++ -I\"/Applications/ti/ccs2110/ccs/ccs_base/msp430/include\" -I\"/Users/lucassutton/workspace_ccstheia/FinalProject\" -I\"/Applications/ti/ccs2110/ccs/tools/compiler/ti-cgt-msp430_21.6.3.LTS/include\" -D__MSP430FR6989__ -D_MPU_ENABLE -xc",
+      "file"      : "/Users/lucassutton/workspace_ccstheia/FinalProject/main.c"
+   }
+]
