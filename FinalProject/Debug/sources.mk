@@ -106,4 +106,7 @@ S62_DEPS__QUOTED :=
 # Every subdirectory with source files must be described here
 SUBDIRS := \
 . \
+GrLib/fonts \
+GrLib/grlib \
+LcdDriver \
 

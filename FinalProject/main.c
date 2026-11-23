@@ -1,5 +1,6 @@
 #include <msp430fr6989.h> 
-#include <Template_Driver.h>
+#include "GrLib/grlib/grlib.h"
+#include "LcdDriver/lcd_driver.h"
 void Initialize_ADC();
 void Initialize_Buzzer(void);
 void Buzzer_Set(unsigned char on);
@@ -18,8 +19,6 @@ int main(void)
 	// int SPI_Locations[9] = [0,1,2,3,4,5,6,7,8];
 	// char ADC_Direction[4] = ['U','D','L','R'];
 	PM5CTL0 &= ~LOCKLPM5;  // Enable GPIO pins
-
-
 
 	return 0;
 }

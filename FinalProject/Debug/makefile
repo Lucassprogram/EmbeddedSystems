@@ -11,6 +11,33 @@ GEN_CMDS__FLAG :=
 
 ORDERED_OBJS += \
 "./main.obj" \
+"./GrLib/fonts/fontClean5x8.obj" \
+"./GrLib/fonts/fontClean7x10.obj" \
+"./GrLib/fonts/fontCourier7x13.obj" \
+"./GrLib/fonts/fontCourier7x13b.obj" \
+"./GrLib/fonts/fontFixed7x13.obj" \
+"./GrLib/fonts/fontLucidabright6x12.obj" \
+"./GrLib/fonts/fontLucidasans6x11.obj" \
+"./GrLib/fonts/fontLucidasans8x15.obj" \
+"./GrLib/fonts/fontcm12.obj" \
+"./GrLib/fonts/fontcm12b.obj" \
+"./GrLib/fonts/fontcm16.obj" \
+"./GrLib/fonts/fontcmss12.obj" \
+"./GrLib/fonts/fontcmtt12.obj" \
+"./GrLib/fonts/fontfixed6x8.obj" \
+"./GrLib/grlib/button.obj" \
+"./GrLib/grlib/checkbox.obj" \
+"./GrLib/grlib/circle.obj" \
+"./GrLib/grlib/context.obj" \
+"./GrLib/grlib/display.obj" \
+"./GrLib/grlib/image.obj" \
+"./GrLib/grlib/imageButton.obj" \
+"./GrLib/grlib/line.obj" \
+"./GrLib/grlib/radioButton.obj" \
+"./GrLib/grlib/rectangle.obj" \
+"./GrLib/grlib/string.obj" \
+"./LcdDriver/lcd_driver.obj" \
+"./LcdDriver/lower_driver.obj" \
 "../lnk_msp430fr6989.cmd" \
 $(GEN_CMDS__FLAG) \
 -llibmpu_init.a \
@@ -25,7 +52,13 @@ RMDIR := RMDIR /S/Q
 # All of the sources participating in the build are defined here
 -include sources.mk
 -include subdir_vars.mk
+-include GrLib/fonts/subdir_vars.mk
+-include GrLib/grlib/subdir_vars.mk
+-include LcdDriver/subdir_vars.mk
 -include subdir_rules.mk
+-include GrLib/fonts/subdir_rules.mk
+-include GrLib/grlib/subdir_rules.mk
+-include LcdDriver/subdir_rules.mk
 -include objects.mk
 
 ifneq ($(MAKECMDGOALS),clean)
@@ -136,8 +169,8 @@ FinalProject.out: $(OBJS) $(CMD_SRCS) $(GEN_CMDS)
 # Other Targets
 clean:
 	-$(RM) $(EXE_OUTPUTS__QUOTED)
-	-$(RM) "main.obj" 
-	-$(RM) "main.d" 
+	-$(RM) "main.obj" "GrLib\fonts\fontClean5x8.obj" "GrLib\fonts\fontClean7x10.obj" "GrLib\fonts\fontCourier7x13.obj" "GrLib\fonts\fontCourier7x13b.obj" "GrLib\fonts\fontFixed7x13.obj" "GrLib\fonts\fontLucidabright6x12.obj" "GrLib\fonts\fontLucidasans6x11.obj" "GrLib\fonts\fontLucidasans8x15.obj" "GrLib\fonts\fontcm12.obj" "GrLib\fonts\fontcm12b.obj" "GrLib\fonts\fontcm16.obj" "GrLib\fonts\fontcmss12.obj" "GrLib\fonts\fontcmtt12.obj" "GrLib\fonts\fontfixed6x8.obj" "GrLib\grlib\button.obj" "GrLib\grlib\checkbox.obj" "GrLib\grlib\circle.obj" "GrLib\grlib\context.obj" "GrLib\grlib\display.obj" "GrLib\grlib\image.obj" "GrLib\grlib\imageButton.obj" "GrLib\grlib\line.obj" "GrLib\grlib\radioButton.obj" "GrLib\grlib\rectangle.obj" "GrLib\grlib\string.obj" "LcdDriver\lcd_driver.obj" "LcdDriver\lower_driver.obj" 
+	-$(RM) "main.d" "GrLib\fonts\fontClean5x8.d" "GrLib\fonts\fontClean7x10.d" "GrLib\fonts\fontCourier7x13.d" "GrLib\fonts\fontCourier7x13b.d" "GrLib\fonts\fontFixed7x13.d" "GrLib\fonts\fontLucidabright6x12.d" "GrLib\fonts\fontLucidasans6x11.d" "GrLib\fonts\fontLucidasans8x15.d" "GrLib\fonts\fontcm12.d" "GrLib\fonts\fontcm12b.d" "GrLib\fonts\fontcm16.d" "GrLib\fonts\fontcmss12.d" "GrLib\fonts\fontcmtt12.d" "GrLib\fonts\fontfixed6x8.d" "GrLib\grlib\button.d" "GrLib\grlib\checkbox.d" "GrLib\grlib\circle.d" "GrLib\grlib\context.d" "GrLib\grlib\display.d" "GrLib\grlib\image.d" "GrLib\grlib\imageButton.d" "GrLib\grlib\line.d" "GrLib\grlib\radioButton.d" "GrLib\grlib\rectangle.d" "GrLib\grlib\string.d" "LcdDriver\lcd_driver.d" "LcdDriver\lower_driver.d" 
 	-@echo ' '
 
 .PHONY: all clean dependents
